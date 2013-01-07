@@ -1,0 +1,119 @@
+#!/bin/bash
+
+CMD_NOT_FOUND=42
+
+SUDO=/usr/bin/sudo
+[[ $(id -u) -eq 0 ]] && SUDO=""
+
+_show_uptime()
+{
+        /usr/bin/uptime | awk 'BEGIN { FS="," } { print substr($1,2) }'
+}
+
+_show_kernelversion()
+{
+    /bin/uname -sr
+}
+
+_check_itm_agent()
+{
+    CINFO_BIN=$1
+    [ ! -e ${CINFO_BIN} ] && return 1
+
+    (${CINFO_BIN} -r | grep -i "not running") >/dev/null 2>&1
+    [ $? -ge 1 ] && return 0
+    return 1
+}
+
+_check_process()
+{
+    PROCESS=$1
+    ps -ef | grep ${PROCESS} | grep -v "grep ${PROCESS}" >/dev/null 2>&1
+    return $?
+}
+
+_check_multipath_datapath()
+{
+    [ ! -e ${DATAPATH} ] && return ${CMD_NOT_FOUND}
+
+    ${SUDO} ${DATAPATH} query device | \
+        awk '$1 ~ /^[0-9].*/' | \
+            grep -iE "close_dead|dead|invalid"
+
+    [ $? -ge 1 ] && return 0
+    return 1
+}
+
+_check_multipath_hdlm()
+{
+    [ ! -e ${DLNKMGR} ] && return ${CMD_NOT_FOUND}
+
+    ${SUDO} ${DLNKMGR} view -path -item hd | \
+        awk '$1 ~ /^[0-9]/ && $2 !~ /[O|o]nline/ { exit 1 }'
+    RETVAL=$?
+
+    return ${RETVAL}
+}
+
+_check_multipath()
+{
+    SUPPORTED_STORAGE="$@"
+
+    for s in ${SUPPORTED_STORAGE};
+    do
+        ${s}
+        RET=$?
+        [ ${RET} -ne ${CMD_NOT_FOUND} ] && break
+    done
+
+    if [ ${RET} -eq ${CMD_NOT_FOUND} ] ;
+    then
+        echo " + No external storage found."
+        return 1
+    fi
+
+    return ${RET}
+}
+
+_check_mounted_filesystems()
+{
+    ret=0
+    while read fs;
+        do
+                if ! (mount 2>/dev/null | awk '{ print $2,$3 }' | grep ${fs} >/dev/null 2>&1) ;
+                then
+                        echo " + Not mounted:${fs}"
+            ret=1
+                fi
+        done
+
+    return ${ret}
+}
+
+_check_filesystems_capacity()
+{
+    m=$(awk -v t="${FS_THRESHOLD}" 'int($5) > t { print $6 }')
+
+    ret=0
+    for fs in ${m};
+    do
+        used=$(${SUDO} df -P ${fs} | awk 'NR > 1 { print $5 }')
+        echo " + Capacity ${used}: ${fs}"
+        ret=1
+    done
+
+    return ${ret}
+}
+
+_check_paging_space_use()
+{
+    ps_use=$1
+    if [[ ${ps_use} -ge ${PS_THRESHOLD} ]] ;
+    then
+        echo ${ps_use} \
+            | awk '{ printf " + Paging space is at %d%%\n", $1 }'
+        return 1
+    fi
+    return 0
+}
+

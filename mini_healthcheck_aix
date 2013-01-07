@@ -1,0 +1,106 @@
+#!/bin/bash
+
+. ./mini_healthcheck_lib
+
+show_uptime()
+{
+    _show_uptime
+}
+
+show_kernelversion()
+{
+    (echo $(uname) $(oslevel -r)) 2>/dev/null
+}
+
+check_network()
+{
+    ping -w 1 -c 1 $(/bin/netstat -rn | awk '$1 ~ /default/ { print $2 }') \
+        >/dev/null 2>&1
+    return $?
+}
+
+check_ntp()
+{
+    _check_process "ntpd"
+    return $?
+}
+
+check_itm_agent()
+{
+    _check_itm_agent "/opt/IBM/ITM/bin/cinfo"
+    return $?
+}
+
+check_tsm_client()
+{
+    _check_process "dsmc"
+    return $?
+}
+
+_check_multipath_lspath()
+{
+    [ ! -e ${LSPATH} ] && return ${CMD_NOT_FOUND}
+
+    ${LSPATH} -s failed | grep -i failed
+
+    [ $? -ge 1 ] && return 0
+    return 1
+}
+
+_check_multipath_hdlm_aix()
+{
+    DLNKMGR="${DLNKMGR_AIX}"
+    _check_multipath_hdlm
+}
+
+_check_multipath_xiv()
+{
+    [ ! -e ${XIVPATH} ] && return ${CMD_NOT_FOUND}
+
+    (${SUDO} ${XIVPATH} -x | \
+        awk '$1 ~ /^[0-9].*/' | \
+        grep -iv -E 'available|missing') 2>/dev/null
+
+    [ $? -ge 1 ] && return 0
+    return 1
+}
+
+check_multipath()
+{
+    SUPPORTED_STORAGE="_check_multipath_xiv _check_multipath_datapath \
+        _check_multipath_hdlm_aix _check_multipath_lspath"
+
+    _check_multipath ${SUPPORTED_STORAGE}
+    return $?
+}
+
+check_mounted_filesystems()
+{
+    /usr/sbin/lsfs -c | awk -F: '$8 == "yes" { print $1 }' | \
+        _check_mounted_filesystems
+}
+
+check_filesystems_capacity()
+{
+    ${SUDO} df -P | awk '$1 ~ /^\// && $1 !~ /\/dev\/cd.*/' | \
+        _check_filesystems_capacity
+}
+
+check_paging_space()
+{
+    inactive_ps=$(lsps -a | awk 'NR > 1 && $6 == "no" && \
+        $7 == "yes" { print $1 }')
+
+    if [[ ! -z ${inactive_ps} ]] ;
+    then
+        echo " + Paging device(s) not activated:"
+        echo " + ${inactive_ps}"
+        return 1
+    fi
+
+    ps_use=$(lsps -s | awk 'NR > 1 { split($2,a,"%"); print a[1] }')
+    _check_paging_space_use ${ps_use} || return 1
+
+    return 0
+}
+

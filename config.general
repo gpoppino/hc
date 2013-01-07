@@ -1,0 +1,40 @@
+# ${checklist} is included from config.${platform}
+platform=$(uname | tr '[A-Z]' '[a-z]')
+. ./config.${platform}
+
+#
+# Checks
+#
+basic_checks="check_network check_mounted_filesystems \
+    check_filesystems_capacity check_paging_space"
+tivoli_checks="check_itm_agent check_tsm_client"
+filesystem_checks="check_mounted_filesystems check_filesystems_capacity"
+
+#
+# Groups
+#
+group_noitm_servers="serverA"
+group_noitm_checks="${basic_checks} check_tsm_client"
+
+group_raid_servers="server1 server2"
+group_raid_checks="${checklist} check_adaptec_raid"
+
+group_customer_servers="serverB"
+group_customer_checks="check_network check_multipath ${filesystem_checks} check_paging_space check_adaptec_raid" 
+
+#
+# Settings
+#
+# Paging Space Threshold
+PS_THRESHOLD=80
+
+# File system Threshold
+FS_THRESHOLD=90
+
+# Multiple Path IO Commands
+DATAPATH=/usr/bin/datapath
+LSPATH=/usr/sbin/lspath
+MULTIPATH=/sbin/multipath
+XIVPATH=/usr/bin/lsxiv
+DLNKMGR_AIX=/usr/DynamicLinkManager/bin/dlnkmgr
+DLNKMGR_LINUX=/opt/DynamicLinkManager/bin/dlnkmgr

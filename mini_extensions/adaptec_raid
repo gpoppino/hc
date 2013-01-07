@@ -1,0 +1,28 @@
+
+check_adaptec_raid()
+{
+    ARCCONF=/usr/sbin/arcconf
+
+    RETVAL=0
+    while [[ 1 -eq 1 ]];
+    do
+        ctrl=$(( ${ctrl} + 1 ))
+
+        status=$(sudo ${ARCCONF} getconfig ${ctrl} AD | \
+                grep -i defunct)
+        [[ $? -gt 0 ]] && break
+
+        echo ${status} | awk -v c="$ctrl" 'BEGIN { FS=":" } \
+            { 
+                if ($2 > 0) {
+                    printf " + Controller %d has %d defunct disk drivers.\n", c, $2
+                    exit 1
+                }
+                
+            }'
+        [[ $? -gt 0 ]] && RETVAL=1
+    done
+
+    return ${RETVAL}
+}
+
