@@ -32,6 +32,13 @@ _check_process()
     return $?
 }
 
+_check_tcp_port()
+{
+    PORT=$1
+    netstat -lnt | awk '{ print $4 }' | grep :${PORT} >/dev/null 2>&1
+    return $?
+}
+
 _check_multipath_datapath()
 {
     [ ! -e ${DATAPATH} ] && return ${CMD_NOT_FOUND}
