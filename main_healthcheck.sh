@@ -28,7 +28,7 @@ detect_platform()
 {
     PLATFORM=$(uname | tr '[A-Z]' '[a-z]')
 
-    if [[ ! -e "mini_healthcheck_${PLATFORM}" ]] ; 
+    if [[ ! -e "healthcheck_${PLATFORM}" ]] ; 
     then
         echo "Platform ${PLATFORM} is not supported. Bye!"
         exit 1
@@ -39,7 +39,7 @@ detect_platform()
 
 run_checks()
 {
-    echo "= Mini health check for $(hostname -s) [Begin] -- $(date) ="
+    echo "= Health check for $(hostname -s) [Begin] -- $(date) ="
     echo
     for show_info in ${infolist};
     do
@@ -61,18 +61,18 @@ run_checks()
             GLOBAL_RETVAL=$((${GLOBAL_RETVAL} + ${RETVAL}))
     done
     echo
-    echo "= Mini health check for $(hostname -s) [Done] -- $(date) ="
+    echo "= Health check for $(hostname -s) [Done] -- $(date) ="
 
     return ${GLOBAL_RETVAL}
 }
 
 PLATFORM=$( detect_platform )
 
-for ext in $(ls ./mini_extensions);
+for ext in $(ls ./extensions);
 do
-    . ./mini_extensions/${ext}
+    . ./extensions/${ext}
 done
-. ./mini_healthcheck_${PLATFORM}
+. ./healthcheck_${PLATFORM}
 . ./${GENERAL_CONFIG}
 
 run_checks

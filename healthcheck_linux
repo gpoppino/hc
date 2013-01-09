@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./mini_healthcheck_lib
+. ./healthcheck_lib
 
 show_uptime()
 {
