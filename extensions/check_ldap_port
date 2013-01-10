@@ -1,0 +1,7 @@
+
+check_ldap_port()
+{
+    _check_tcp_port "389"
+    return $?
+}
+

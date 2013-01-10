@@ -1,0 +1,7 @@
+
+check_ldaps_port()
+{
+    _check_tcp_port "636"
+    return $?
+}
+
