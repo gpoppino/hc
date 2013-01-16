@@ -34,6 +34,9 @@ FS_THRESHOLD=90
 # NTP time offset in milliseconds
 NTP_OFFSET=5000
 
+# Host name used for name resolution check
+NAME_RESOLUTION_TEST_HOST="www.google.com"
+
 # Multiple Path IO Commands
 DATAPATH=/usr/bin/datapath
 LSPATH=/usr/sbin/lspath

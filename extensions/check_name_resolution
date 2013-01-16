@@ -1,0 +1,23 @@
+
+check_name_resolution()
+{
+    /usr/bin/host -W 5 $(hostname -f) | grep -i "not found" >/dev/null 2>&1
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ] ;
+    then
+        echo " + Local hostname not resolvable: $(hostname -f)"
+        return 1
+    fi
+
+    /usr/bin/host -W 5 ${NAME_RESOLUTION_TEST_HOST} | \
+                                    grep -i "not found" >/dev/null 2>&1
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ] ;
+    then
+        echo " + Host not resolvable: ${NAME_RESOLUTION_TEST_HOST}"
+        return 1
+    fi
+   
+    return 0 
+}
+
