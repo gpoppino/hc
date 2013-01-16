@@ -21,7 +21,7 @@ check_network()
 
 check_ntp()
 {
-    _check_process "ntpd"
+    _check_ntp
     return $?
 }
 

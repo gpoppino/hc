@@ -31,6 +31,9 @@ PS_THRESHOLD=80
 # File system Threshold
 FS_THRESHOLD=90
 
+# NTP time offset in milliseconds
+NTP_OFFSET=5000
+
 # Multiple Path IO Commands
 DATAPATH=/usr/bin/datapath
 LSPATH=/usr/sbin/lspath
