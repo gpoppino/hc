@@ -44,3 +44,12 @@ MULTIPATH=/sbin/multipath
 XIVPATH=/usr/bin/lsxiv
 DLNKMGR_AIX=/usr/DynamicLinkManager/bin/dlnkmgr
 DLNKMGR_LINUX=/opt/DynamicLinkManager/bin/dlnkmgr
+
+# NetIQ Identity Manager: server to drivers association
+# All drivers listed for a server will be checked to be running
+typeset -A IDM_SRV_TO_DRV
+IDM_SRV_TO_DRV[servername01]="cn=LoopBackDriver01,cn=DriverSet0,ou=idm,ou=services,o=mycompany \
+                     cn=ADDriver01,cn=DriverSet0,ou=idm,ou=services,o=mycompany"
+IDM_SRV_TO_DRV[servername02]="cn=LoopBackDriver02,cn=DriverSet0,ou=idm,ou=services,o=mycompany \
+                     cn=ADDriver02,cn=DriverSet0,ou=idm,ou=services,o=mycompany"
+
