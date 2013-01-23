@@ -37,6 +37,9 @@ NTP_OFFSET=5000
 # Host name used for name resolution check
 NAME_RESOLUTION_TEST_HOST="www.google.com"
 
+# CPU Threshold
+CPU_THRESHOLD=90
+
 # Multiple Path IO Commands
 DATAPATH=/usr/bin/datapath
 LSPATH=/usr/sbin/lspath
