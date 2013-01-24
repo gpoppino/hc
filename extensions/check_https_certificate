@@ -1,0 +1,7 @@
+
+check_https_certificate()
+{
+    _check_certificate_expiration "443"
+    return $?
+}
+

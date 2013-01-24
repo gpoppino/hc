@@ -1,0 +1,7 @@
+
+check_imaps_certificate()
+{
+    _check_certificate_expiration "993"
+    return $?
+}
+

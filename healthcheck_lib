@@ -137,3 +137,40 @@ _check_paging_space_use()
     return 0
 }
 
+_check_certificate_expiration()
+{
+    PORT=$1
+    OPENSSL=/usr/bin/openssl
+
+    expiration_date=$(echo | \
+        ${OPENSSL} s_client -connect $(hostname -f):${PORT} 2>/dev/null | \
+        sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | \
+        ${OPENSSL} x509 -noout -subject -dates 2>/dev/null | \
+        grep notAfter | cut -d= -f2 | awk '{ print $1,$2,$4 }'
+    )
+    [ -z $expiration_date ] && return 1
+
+    typeset -A months
+    months[Jan]=1;months[Feb]=2;months[Mar]=3;months[Apr]=4 
+    months[May]=5;months[Jun]=6;months[Jul]=7;months[Aug]=8 
+    months[Sep]=9;months[Oct]=10;months[Nov]=11;months[Dic]=12 
+
+    cert_year=$(echo $expiration_date | awk '{ print $3 }')
+    cert_month=${months[$(echo $expiration_date | awk '{ print $1 }')]}
+    cert_day=$(echo $expiration_date | awk '{ print $2 }')
+
+    curr_year=$(date --date="${DAYS_BEFORE_CERTIFICATE_EXPIRATION} days ago" +%Y)
+    curr_month=$(date --date="${DAYS_BEFORE_CERTIFICATE_EXPIRATION} days ago" +%m)
+    curr_day=$(date --date="${DAYS_BEFORE_CERTIFICATE_EXPIRATION} days ago" +%d)
+
+    EXPIRED=0
+    [ $curr_year -gt $cert_year ] && EXPIRED=1
+    [ $curr_year -eq $cert_year ] && [ $curr_month -gt $cert_month ] && EXPIRED=1
+    [ $curr_year -eq $cert_year ] && [ $curr_month -eq $cert_month ] && \
+        [ $curr_day -ge $cert_day ] && EXPIRED=1
+
+    [ $EXPIRED -eq 1 ] && echo " + Certificate will expire or expired on: $expiration_date"
+    
+    return $EXPIRED 
+}
+
