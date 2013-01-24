@@ -28,7 +28,7 @@ check_netiq_idm()
 
             if [ $state -ne 2 ];
             then
-                echo " + Driver not running: $driver"
+                echo " + Driver not running on ${server}: $driver"
                 GLOBAL_RET_VAL=1
             fi
         done
