@@ -1,0 +1,7 @@
+
+check_ldaps_certificate()
+{
+    _check_certificate_expiration "636"
+    return $?
+}
+
