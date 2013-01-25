@@ -140,11 +140,6 @@ _check_certificate_expiration()
     )
     [ -z $expiration_date ] && return 1
 
-    typeset -A months
-    months[Jan]=1;months[Feb]=2;months[Mar]=3;months[Apr]=4 
-    months[May]=5;months[Jun]=6;months[Jul]=7;months[Aug]=8 
-    months[Sep]=9;months[Oct]=10;months[Nov]=11;months[Dic]=12 
-
     cert_year=$(date --date="$expiration_date -${DAYS_BEFORE_CERTIFICATE_EXPIRATION} days" +%Y)
     cert_month=$(date --date="$expiration_date -${DAYS_BEFORE_CERTIFICATE_EXPIRATION} days" +%m)
     cert_day=$(date --date="$expiration_date -${DAYS_BEFORE_CERTIFICATE_EXPIRATION} days" +%d)
