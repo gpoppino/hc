@@ -28,16 +28,6 @@ _check_ntp()
     return 0
 }
 
-_check_itm_agent()
-{
-    CINFO_BIN=$1
-    [ ! -e ${CINFO_BIN} ] && return 1
-
-    (${CINFO_BIN} -r | grep -i "not running") >/dev/null 2>&1
-    [ $? -ge 1 ] && return 0
-    return 1
-}
-
 _check_process()
 {
     PROCESS=$1

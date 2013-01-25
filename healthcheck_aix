@@ -25,18 +25,6 @@ check_ntp()
     return $?
 }
 
-check_itm_agent()
-{
-    _check_itm_agent "/opt/IBM/ITM/bin/cinfo"
-    return $?
-}
-
-check_tsm_client()
-{
-    _check_process "dsmc"
-    return $?
-}
-
 _check_multipath_lspath()
 {
     [ ! -e ${LSPATH} ] && return ${CMD_NOT_FOUND}
