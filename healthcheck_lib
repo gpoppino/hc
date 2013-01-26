@@ -7,7 +7,7 @@ SUDO=/usr/bin/sudo
 
 _show_uptime()
 {
-        /usr/bin/uptime | awk 'BEGIN { FS="," } { print substr($1,2) }'
+    /usr/bin/uptime | awk 'BEGIN { FS="," } { print substr($1,2) }'
 }
 
 _show_kernelversion()

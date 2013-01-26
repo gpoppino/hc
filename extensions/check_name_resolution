@@ -2,20 +2,20 @@
 check_name_resolution()
 {
     /usr/bin/host -W 5 $(hostname -f) | \
-                                    grep -iE "not found|timed out" >/dev/null 2>&1
+        grep -iE "not found|timed out" >/dev/null 2>&1
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ;
     then
-        echo " + Local hostname not resolvable: $(hostname -f)"
+        echo " + Local hostname not resolvable by DNS: $(hostname -f)"
         return 1
     fi
 
     /usr/bin/host -W 5 ${NAME_RESOLUTION_TEST_HOST} | \
-                                    grep -iE "not found|timed out" >/dev/null 2>&1
+        grep -iE "not found|timed out" >/dev/null 2>&1
     RETVAL=$?
     if [ $RETVAL -eq 0 ] ;
     then
-        echo " + Host not resolvable: ${NAME_RESOLUTION_TEST_HOST}"
+        echo " + Host not resolvable by DNS: ${NAME_RESOLUTION_TEST_HOST}"
         return 1
     fi
    
