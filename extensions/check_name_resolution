@@ -1,6 +1,8 @@
 
 check_name_resolution()
 {
+    hostname -f >/dev/null 2>&1 || return 1
+
     /usr/bin/host -W 5 $(hostname -f) | \
         grep -iE "not found|timed out" >/dev/null 2>&1
     RETVAL=$?
