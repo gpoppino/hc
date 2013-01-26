@@ -42,7 +42,7 @@ _check_multipath_linux()
 {
     [ ! -e ${MULTIPATH} ] && return ${CMD_NOT_FOUND}
 
-    ${SUDO} ${MULTIPATH} -l | grep -E "failed|faulty"
+    ${SUDO} ${MULTIPATH} -l | grep -E "failed|faulty|not loaded"
     [ $? -ge 1 ] && return 0
     return 1
 }
