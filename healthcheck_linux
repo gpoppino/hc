@@ -16,16 +16,20 @@ check_network()
 {
     CONFIG_PATH="/etc/sysconfig/network*"
 
-    netdevices=$(ls -1 ${CONFIG_PATH} | grep 'ifcfg-*[0-9]' | \
+    netdevices=$(ls -1 ${CONFIG_PATH} | grep 'ifcfg-.*[0-9]' | \
                 sed 's/.*ifcfg-\(.*\)/\1/g')
-
+    
+    RETVAL=0
     for dev in ${netdevices};
     do
-        grep -i "ONBOOT=no" $CONFIG_PATH/ifcfg-${dev} \
-            >/dev/null 2>&1 && continue
+        ${SUDO} grep -iE "ONBOOT=no|STARTMODE=(.?manual.?|.?off.?)" \
+            $CONFIG_PATH/ifcfg-${dev} >/dev/null 2>&1 && continue
 
-        /sbin/ifconfig ${dev} >/dev/null 2>&1 || return $?
+        (/sbin/ifconfig ${dev} | grep -w UP) >/dev/null 2>&1
+        [ $? -ge 1 ] && RETVAL=1 && echo " + ${dev} is down."
     done
+    
+    return $RETVAL
 }
 
 check_ntp()
