@@ -21,7 +21,8 @@ _check_ntp()
     RETVAL=$?
     [ $RETVAL -ne 0 ] && return 1
 
-    OFFSET=$(/usr/sbin/ntpq -np | awk ' NR > 3 { print $9 }' | cut -d. -f1 | \
+    NTPQ=/usr/sbin/ntpq
+    OFFSET=$(${NTPQ} -np | awk ' NR > 3 { print $9 }' | cut -d. -f1 | \
                 sed 's/-\|\.//g' | sort -n | head -1)
     [ ${OFFSET} -gt ${NTP_OFFSET} ] && return 1
 
