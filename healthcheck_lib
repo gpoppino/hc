@@ -18,8 +18,7 @@ _show_kernelversion()
 _check_ntp()
 {
     _check_process "ntpd"
-    RETVAL=$?
-    [ $RETVAL -ne 0 ] && return 1
+    [ $? -ne 0 ] && return 1
 
     NTPQ=/usr/sbin/ntpq
     OFFSET=$(${NTPQ} -np | awk ' NR > 3 { print $9 }' | cut -d. -f1 | \
@@ -39,8 +38,12 @@ _check_process()
 _check_tcp_port()
 {
     PORT=$1
-    netstat -lnt | awk '{ print $4 }' | grep :${PORT} >/dev/null 2>&1
-    return $?
+    netstat -lnt | awk '{ print $4 }' | grep :${PORT} >/dev/null 2>&1 || \
+        return 1
+
+    NETCAT=$(which netcat 2>/dev/null)
+    ${NETCAT} -z $(hostname) ${PORT} || return 1
+    return 0
 }
 
 _check_multipath_datapath()
