@@ -33,8 +33,6 @@ detect_platform()
         echo "Platform ${PLATFORM} is not supported. Bye!"
         exit 1
     fi
-
-    echo ${PLATFORM}
 }
 
 run_checks()
@@ -66,7 +64,8 @@ run_checks()
     return ${GLOBAL_RETVAL}
 }
 
-PLATFORM=$( detect_platform )
+PLATFORM=""
+detect_platform
 
 for ext in $(ls ./extensions);
 do
