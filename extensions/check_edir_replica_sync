@@ -5,7 +5,8 @@ check_edir_replica_sync()
 
     [ -z ${NDSREPAIR} ] && return 1
 
-    total_errors=$(${NDSREPAIR} -E | grep -i "total errors" | cut -d: -f2 | sed 's/\s//g')
+    total_errors=$(${NDSREPAIR} -E | grep -i "total errors" | cut -d: -f2 | \
+        sed 's/\s//g')
     RETVAL=$?
 
     [ $RETVAL -ne 0 ] && return 1
