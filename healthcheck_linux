@@ -22,7 +22,7 @@ check_network()
     RETVAL=0
     for dev in ${netdevices};
     do
-        ${SUDO} grep -iE "ONBOOT=no|STARTMODE=(.?manual.?|.?off.?)" \
+        ${SUDO} grep -iE "ONBOOT=.?no.?|STARTMODE=(.?manual.?|.?off.?)" \
             $CONFIG_PATH/ifcfg-${dev} >/dev/null 2>&1 && continue
 
         (/sbin/ifconfig ${dev} | grep -w UP) >/dev/null 2>&1
