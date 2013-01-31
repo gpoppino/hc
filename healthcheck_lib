@@ -41,8 +41,8 @@ _check_tcp_port()
     netstat -lnt | awk '{ print $4 }' | grep :${PORT} >/dev/null 2>&1 || \
         return 1
 
-    NETCAT=$(which netcat 2>/dev/null)
-    ${NETCAT} -z $(hostname) ${PORT} || return 1
+    NETCAT=$(which netcat 2>/dev/null || which nc 2>/dev/null)
+    ${NETCAT} -z $(hostname) ${PORT} >/dev/null 2>&1 || return 1
     return 0
 }
 
