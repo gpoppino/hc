@@ -4,7 +4,7 @@ check_edir_time_sync()
     NDSREPAIR=$(which ndsrepair 2>/dev/null)
     [ -z ${NDSREPAIR} ] && return 1
 
-    ${NDSREPAIR} -T | grep "^\.$(hostname -f)" | awk '{ print $5 }' | \
+    ${NDSREPAIR} -T | grep -i "^\.$(hostname -s)" | awk '{ print $5 }' | \
         grep -w No >/dev/null
     [ $? -eq 0 ] && return 1
     return 0
