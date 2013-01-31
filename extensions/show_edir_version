@@ -1,9 +1,9 @@
 
 show_edir_version()
 {
-    NDSSTAT=$(which ndsstat 2>/dev/null)
+    NDSD=$(which ndsd 2>/dev/null)
 
-    version=$($NDSSTAT | grep -i version | sort -r)
-    echo $version | awk '{ print $7,$8,"-",$12 }'
+    version=$($NDSD --version | awk '{ print $3,$4,"-",$5 }')
+    echo $version
 }
 
