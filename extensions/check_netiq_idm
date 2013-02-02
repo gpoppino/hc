@@ -21,7 +21,7 @@ check_netiq_idm()
 
             if [ $RETVAL -ne 0 ];
             then
-                echo " + Error querying driver: $driver"
+                echo " + Error querying driver on ${server}: $driver"
                 GLOBAL_RET_VAL=1
                 continue
             fi
