@@ -67,8 +67,8 @@ check_mounted_filesystems()
     cat /etc/fstab | \
         awk '$2 ~ /^\// && $1 !~ /^#/ && $4 !~ /noauto/ \
         { 
-                mpoint = $2
-                if (substr($2, length($2)) == "/" && length($2) > 1)
+            mpoint = $2
+            if (substr($2, length($2)) == "/" && length($2) > 1)
                 mpoint = substr($2, 0, length($2)-1)
             print mpoint
         }' | _check_mounted_filesystems
