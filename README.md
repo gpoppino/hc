@@ -85,11 +85,13 @@ group is found for a specific server.
 Known issues
 ============
 
-Functions called *show_* still cannot be grouped by servers.
+* Functions called *show_* still cannot be grouped by servers.
+* check_network does not work under Ubuntu.
 
 TODO
 ====
 
-Group *show_* functions with servers.
+* Group *show_* functions with servers.
+* Fix check_network to work under Ubuntu.
 
 
