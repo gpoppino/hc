@@ -39,12 +39,10 @@ Coding conventions
 
 My .vimrc file is the following:
 
-`
-set textwidth=80
-set tabstop=4
-set shiftwidth=4
-set expandtab
-` 
+    set textwidth=80
+    set tabstop=4
+    set shiftwidth=4
+    set expandtab
 
 Indentation is with spaces and tabs are 4 spaces. Lines larger than 80
 characters should be wrapped with the `\` character.
