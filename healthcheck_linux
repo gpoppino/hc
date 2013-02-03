@@ -14,9 +14,10 @@ show_kernelversion()
 
 check_network()
 {
+    # SUSE and CentOS network check
     CONFIG_PATH="/etc/sysconfig/network*"
 
-    netdevices=$(ls -1 ${CONFIG_PATH} | grep 'ifcfg-.*[0-9]' | \
+    netdevices=$(ls -1 ${CONFIG_PATH} 2>/dev/null | grep 'ifcfg-.*[0-9]' | \
                 sed 's/.*ifcfg-\(.*\)/\1/g')
     
     RETVAL=0
@@ -25,6 +26,23 @@ check_network()
         ${SUDO} grep -iE "ONBOOT=.?no.?|STARTMODE=(.?manual.?|.?off.?)" \
             $CONFIG_PATH/ifcfg-${dev} >/dev/null 2>&1 && continue
 
+        (/sbin/ifconfig ${dev} | grep -w UP) >/dev/null 2>&1
+        [ $? -ge 1 ] && RETVAL=1 && echo " + ${dev} is down."
+    done
+
+    # Ubuntu network check
+    netdevices=$(cat /etc/network/interfaces 2>/dev/null | \
+        awk '$1 !~ /^#/ && $1 ~ /^auto/ \
+        { 
+            n=2
+            while (n <= NF) {
+                print $n
+                n++
+            }
+        }' | sort | uniq)
+
+    for dev in ${netdevices};
+    do
         (/sbin/ifconfig ${dev} | grep -w UP) >/dev/null 2>&1
         [ $? -ge 1 ] && RETVAL=1 && echo " + ${dev} is down."
     done
