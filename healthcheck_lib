@@ -20,7 +20,7 @@ _check_ntp()
     _check_process "ntpd"
     [ $? -ne 0 ] && return 1
 
-    NTPQ=/usr/sbin/ntpq
+    NTPQ=$(which ntpq 2>/dev/null)
     OFFSET=$(${NTPQ} -np | awk ' NR > 3 { print $9 }' | cut -d. -f1 | \
                 sed 's/-\|\.//g' | sort -n | head -1)
     [ ${OFFSET} -gt ${NTP_OFFSET} ] && return 1
