@@ -1,3 +1,4 @@
+#!/bin/ksh
 
 GENERAL_CONFIG="config.general"
 

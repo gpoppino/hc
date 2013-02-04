@@ -1,5 +1,3 @@
-#!/bin/bash
-
 CMD_NOT_FOUND=42
 
 SUDO=/usr/bin/sudo
