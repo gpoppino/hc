@@ -157,3 +157,20 @@ _check_certificate_expiration()
     return $EXPIRED 
 }
 
+
+_check_cpu_utilization()
+{
+    idle_column=$1
+
+    cpu_util=$((100 - $(vmstat 1 4 | \
+        awk -v n=$idle_column 'NR > 3 { sum += $n } END { print sum/3 }' | cut -d. -f1) ))
+    
+    if [ $cpu_util -ge ${CPU_THRESHOLD} ];
+    then
+        echo " + CPU utilization is equal or greater than %${CPU_THRESHOLD}"
+        return 1
+    fi
+
+    return 0
+}
+

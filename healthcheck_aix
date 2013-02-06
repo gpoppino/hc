@@ -91,3 +91,9 @@ check_paging_space()
     return 0
 }
 
+check_cpu_utilization()
+{
+    _check_cpu_utilization 16
+    return $?
+}
+
