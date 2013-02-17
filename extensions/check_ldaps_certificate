@@ -5,3 +5,9 @@ check_ldaps_certificate()
     return $?
 }
 
+probe_ldaps_certificate()
+{
+    _check_tcp_port "636"
+    return $?
+}
+

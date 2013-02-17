@@ -5,3 +5,9 @@ check_imaps_certificate()
     return $?
 }
 
+probe_imaps_certificate()
+{
+    _check_tcp_port "993"
+    return $?
+}
+

@@ -13,3 +13,9 @@ check_edir_replica_sync()
     return 0
 }
 
+probe_edir_replica_sync()
+{
+    which ndsd >/dev/null 2>&1 || return 1
+    return 0
+}
+
