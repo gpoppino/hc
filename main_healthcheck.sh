@@ -55,8 +55,8 @@ run_probes()
         ${probe}
         RETVAL=$?
 
-        [ $RETVAL -eq 0 ] && check=$(cat $EXTENSIONS_DIR/${ext} \
-            | awk '$1 ~ /^check_.*()/ { print $1 }' | sed 's/()//g')
+        [ $RETVAL -eq 0 ] && check=$(cat $EXTENSIONS_DIR/${ext} | \
+            awk '$1 ~ /^check_.*()/ { print $1 }' | sed 's/()//g')
         extensions_checklist="${extensions_checklist} ${check}" 
     done
     echo "done" | awk '{ printf "Running probes ... %-26s\n", $1 }'
