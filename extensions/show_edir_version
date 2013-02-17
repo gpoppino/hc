@@ -7,3 +7,9 @@ show_edir_version()
     echo $version
 }
 
+probe_edir_version()
+{
+    which ndsd >/dev/null 2>&1 || return 1
+    return 0
+}
+
