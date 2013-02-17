@@ -1,8 +1,8 @@
 
+ARCCONF=/usr/sbin/arcconf
+
 check_adaptec_raid()
 {
-    ARCCONF=/usr/sbin/arcconf
-
     RETVAL=0
     while [[ 1 -eq 1 ]];
     do
@@ -24,5 +24,14 @@ check_adaptec_raid()
     done
 
     return ${RETVAL}
+}
+
+probe_adaptec_raid()
+{
+    FOUND=0
+    which arcconf >/dev/null 2>&1 || FOUND=1
+    [ -e ${ARCCONF} ] && FOUND=0
+   
+    return $FOUND 
 }
 
