@@ -24,7 +24,7 @@ available for those platforms. If a new platform were to be added, its checks
 file should be called healthcheck_*platform*, where *platform* is the name of
 the platform returned by the command `uname`.
 
-The directory *extensions/* containts files with checks that should be platform
+The directory *extensions/* contains files with checks that should be platform
 independent. Generally these files also have a *probe* that helps to determine
 if the check should be run automatically depending on a condition defined by the
 probe. For example, if the server has a HTTPS service running on port 443 then
