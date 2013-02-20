@@ -12,3 +12,9 @@ check_lsi_raid()
     return ${RETVAL}
 }
 
+probe_lsi_raid()
+{
+    which mpt-status >/dev/null 2>&1 || return 1
+    return 0
+}
+

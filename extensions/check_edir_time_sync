@@ -10,3 +10,9 @@ check_edir_time_sync()
     return 1
 }
 
+probe_edir_time_sync()
+{
+    which ndsd >/dev/null 2>&1 || return 1
+    return 0
+}
+

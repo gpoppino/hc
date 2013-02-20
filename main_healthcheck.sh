@@ -1,6 +1,10 @@
 #!/bin/ksh
 
 GENERAL_CONFIG="config.general"
+EXTENSIONS_DIR="./extensions"
+
+extensions_checklist=""
+extensions_infolist=""
 
 get_checklist()
 {
@@ -22,6 +26,7 @@ get_checklist()
     done
 
     checklist=${cl:-$checklist}
+    checklist="${checklist} ${extensions_checklist}"
     echo ${checklist}
 }
 
@@ -36,13 +41,40 @@ detect_platform()
     fi
 }
 
+run_probes()
+{
+    for ext in $(ls $EXTENSIONS_DIR);
+    do
+        check=""
+        info=""
+        . $EXTENSIONS_DIR/${ext}
+        probe=$(cat $EXTENSIONS_DIR/${ext} | 
+            awk '$1 ~ /probe_.*()/ { print $1 }' | sed 's/()//g')
+
+        [ -z ${probe} ] && continue
+
+        echo "${probe}" | awk '{ printf "Running probes ... %-26s\r", $1 }'
+        ${probe}
+        RETVAL=$?
+
+        [ $RETVAL -eq 0 ] && check=$(cat $EXTENSIONS_DIR/${ext} | \
+            awk '$1 ~ /^check_.*()/ { print $1 }' | sed 's/()//g')
+        [ $RETVAL -eq 0 ] && info=$(cat $EXTENSIONS_DIR/${ext} | \
+            awk '$1 ~ /^show_.*()/ { print $1 }' | sed 's/()//g')
+        extensions_checklist="${extensions_checklist} ${check}" 
+        extensions_infolist="${extensions_infolist} ${info}" 
+    done
+    echo "done" | awk '{ printf "Running probes ... %-26s\n", $1 }'
+}
+
 run_checks()
 {
     echo "= Health check for $(hostname -s) [Begin] -- $(date) ="
     echo
+    infolist="${infolist} ${extensions_infolist}"
     for show_info in ${infolist};
     do
-            echo "${show_info}" | awk '{ printf "%-26s:  ", $1 }'
+        echo "${show_info}" | awk '{ printf "%-26s:  ", $1 }'
         ${show_info}
     done
 
@@ -68,13 +100,10 @@ run_checks()
 PLATFORM=""
 detect_platform
 
-for ext in $(ls ./extensions);
-do
-    . ./extensions/${ext}
-done
 . ./healthcheck_${PLATFORM}
 . ./${GENERAL_CONFIG}
 
+[ ${RUN_PROBES} -eq 0 ] && run_probes
 run_checks
 RETVAL=$?
 

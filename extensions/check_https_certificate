@@ -5,3 +5,9 @@ check_https_certificate()
     return $?
 }
 
+probe_https_certificate()
+{
+    _check_tcp_port "443"
+    return $?
+}
+

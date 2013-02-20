@@ -25,7 +25,11 @@ file should be called healthcheck_*platform*, where *platform* is the name of
 the platform returned by the command `uname`.
 
 The directory *extensions/* containts files with checks that should be platform
-independent.
+independent. Generally these files also have a *probe* that helps to determine
+if the check should be run automatically depending on a condition defined by the
+probe. For example, if the server has a HTTPS service running on port 443 then
+the check *check_https_certificate* is run automatically without the need of
+specifying it in the configuration files.
 
 Configuration files are named config.*platform* or config.general.
 config.*platform* files list the checks that should be run for a specific
@@ -44,7 +48,7 @@ My .vimrc file is the following:
     set shiftwidth=4
     set expandtab
 
-Indentation is with spaces and tabs are 4 spaces. Lines larger than 80
+Indentation is with spaces and tabs are 4 spaces. Lines longer than 80
 characters should be wrapped with the `\` character.
 
 
@@ -77,7 +81,8 @@ describes the group. *group_name_servers* should list the available servers,
 whereas *group_name_checks* should list their checks.
 
 A generic check list should be added to config.*platform*. These are run when no
-group is found for a specific server.
+group is found for a specific server. Also, if probes are enabled (RUN_PROBES is
+0), extensions might be run automatically.
 
 
 Known issues

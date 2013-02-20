@@ -2,38 +2,41 @@
 check_netiq_idm()
 {
     GLOBAL_RET_VAL=0
+    LDAP_SEARCH=$(which ldapsearch)
 
+    server=$(hostname -s | tr "[:upper:]" "[:lower:]")
+    for driver in ${IDM_SRV_TO_DRV[$server]};
+    do
+        dirxml_state=$(${LDAP_SEARCH} -x -h $server -s base -b $driver \
+            DirXML-State | grep DirXML-State:)
+        RETVAL=$?
+
+        if [ $RETVAL -ne 0 ];
+        then
+            echo " + Error querying driver on ${server}: $driver"
+            GLOBAL_RET_VAL=1
+            continue
+        fi
+
+        state=$(echo ${dirxml_state} | cut -d: -f2 | sed 's/\s//g')
+        if [ $state -ne 2 ];
+        then
+            echo " + Driver not running on ${server}: $driver"
+            GLOBAL_RET_VAL=1
+        fi
+    done
+
+    return ${GLOBAL_RET_VAL}
+}
+
+probe_netiq_idm()
+{
     servers=${!IDM_SRV_TO_DRV[*]}
     for server in $servers;
     do
         _HOSTNAME=$(hostname -s | tr "[:upper:]" "[:lower:]")
-        if [ $server != ${_HOSTNAME} ];
-        then
-            continue
-        fi
-
-        for driver in ${IDM_SRV_TO_DRV[$server]};
-        do
-            state=$(/usr/bin/ldapsearch -x -h $server -s base -b $driver \
-                    DirXML-State | grep DirXML-State: | cut -d: -f2 | \
-                    sed 's/\s//g')
-            RETVAL=$?
-
-            if [ $RETVAL -ne 0 ];
-            then
-                echo " + Error querying driver on ${server}: $driver"
-                GLOBAL_RET_VAL=1
-                continue
-            fi
-
-            if [ $state -ne 2 ];
-            then
-                echo " + Driver not running on ${server}: $driver"
-                GLOBAL_RET_VAL=1
-            fi
-        done
+        [ $server == ${_HOSTNAME} ] && return 0
     done
-
-    return ${GLOBAL_RET_VAL}
+    return 1
 }
 

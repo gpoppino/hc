@@ -16,7 +16,7 @@ group_raid_servers="server1 server2"
 group_raid_checks="${checklist} check_adaptec_raid"
 
 group_customer_servers="serverB"
-group_customer_checks="check_network check_multipath ${filesystem_checks} check_paging_space check_adaptec_raid" 
+group_customer_checks="check_network check_multipath ${filesystem_checks} check_paging_space" 
 
 #
 # Settings
@@ -38,6 +38,10 @@ CPU_THRESHOLD=90
 
 # Check N days before a certificate expires
 DAYS_BEFORE_CERTIFICATE_EXPIRATION=30
+
+# Should the probes be run to add extensions dynamically?
+# 1 = not run, 0 = run
+RUN_PROBES=0
 
 # Multiple Path IO Commands
 DATAPATH=/usr/bin/datapath

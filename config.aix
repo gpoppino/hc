@@ -1,4 +1,3 @@
 infolist="show_uptime show_kernelversion"
-checklist="check_network check_ntp check_name_resolution \
-    check_mounted_filesystems check_filesystems_capacity \
-    check_paging_space check_multipath"
+checklist="check_network check_ntp check_mounted_filesystems \
+    check_filesystems_capacity check_paging_space check_multipath"
