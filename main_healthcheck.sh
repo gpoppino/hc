@@ -49,7 +49,7 @@ run_probes()
         info=""
         . $EXTENSIONS_DIR/${ext}
         probe=$(cat $EXTENSIONS_DIR/${ext} | 
-            awk '$1 ~ /probe_.*()/ { print $1 }' | sed 's/()//g')
+            awk '$1 ~ /probe_.*\(\)/ { print $1 }' | sed 's/()//g')
 
         [ -z ${probe} ] && continue
 
@@ -58,9 +58,9 @@ run_probes()
         RETVAL=$?
 
         [ $RETVAL -eq 0 ] && check=$(cat $EXTENSIONS_DIR/${ext} | \
-            awk '$1 ~ /^check_.*()/ { print $1 }' | sed 's/()//g')
+            awk '$1 ~ /^check_.*\(\)/ { print $1 }' | sed 's/()//g')
         [ $RETVAL -eq 0 ] && info=$(cat $EXTENSIONS_DIR/${ext} | \
-            awk '$1 ~ /^show_.*()/ { print $1 }' | sed 's/()//g')
+            awk '$1 ~ /^show_.*\(\)/ { print $1 }' | sed 's/()//g')
         extensions_checklist="${extensions_checklist} ${check}" 
         extensions_infolist="${extensions_infolist} ${info}" 
     done
