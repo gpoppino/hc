@@ -4,10 +4,12 @@ check_lsi_raid()
     MPTSTATUS="/usr/bin/mpt-status --autoload -s"
 
     RETVAL=0
-    sudo ${MPTSTATUS} 2>&1 >/dev/null
-    [[ $? -ge 16 ]] && RETVAL=1 
+    sudo ${MPTSTATUS} >/dev/null 2>&1
+    STATUS=$?
+    [ ${STATUS} -ge 16 ] || [ ${STATUS} -eq 1 ] && RETVAL=1 
     
-    sudo ${MPTSTATUS} | awk '/DEGRADED|FAILED/ { print " +", $0 }'
+    [ ${STATUS} -ge 16 ] && sudo ${MPTSTATUS} | \
+        awk '/DEGRADED|FAILED/ { print " +", $0 }'
 
     return ${RETVAL}
 }
