@@ -93,7 +93,7 @@ check_mounted_filesystems()
 
 check_filesystems_capacity()
 {
-    ${SUDO} df -lP -x iso9660 | awk '$1 ~ /^\//' | \
+    ${SUDO} df -lP -x iso9660 -x udf | awk '$1 ~ /^\//' | \
         _check_filesystems_capacity
 }
 
