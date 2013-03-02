@@ -1,13 +1,14 @@
 
 check_netiq_idm()
 {
+    IFS=$'\n'
     GLOBAL_RET_VAL=0
     LDAP_SEARCH=$(which ldapsearch)
 
     server=$(hostname -s | tr "[:upper:]" "[:lower:]")
     for driver in ${IDM_SRV_TO_DRV[$server]};
     do
-        dirxml_state=$(${LDAP_SEARCH} -x -h $server -s base -b $driver \
+        dirxml_state=$(${LDAP_SEARCH} -x -h $server -s base -b "$driver" \
             DirXML-State | grep DirXML-State:)
         RETVAL=$?
 
