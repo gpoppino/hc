@@ -19,8 +19,9 @@ _check_ntp()
     [ $? -ne 0 ] && return 1
 
     NTPQ=$(${SUDO} which ntpq 2>/dev/null)
-    OFFSET=$(${NTPQ} -np | awk ' NR > 3 { print $9 }' | cut -d. -f1 | \
-                sed 's/-\|\.//g' | sort -n | head -1)
+    OFFSET=$(${NTPQ} -np | awk 'NR > 2 { sum+=( $9 >= 0 ) ? $9 : -$9; n++; } \
+        END { if (n >= 1) { print sum/n } else { print 0 } }' | \
+        cut -d. -f1 | sed 's/-\|\.//g')
     [ ${OFFSET} -gt ${NTP_OFFSET} ] && return 1
 
     return 0
