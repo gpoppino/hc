@@ -178,3 +178,13 @@ _check_cpu_utilization()
     return 0
 }
 
+_check_url_response()
+{
+    URL=$1
+
+    curl -k --connect-timeout ${CONNECTION_TIMEOUT} --max-time ${MAX_TIME} \
+        ${URL} >/dev/null 2>&1
+
+    return $?
+}
+

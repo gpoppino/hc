@@ -51,6 +51,10 @@ XIVPATH=/usr/bin/lsxiv
 DLNKMGR_AIX=/usr/DynamicLinkManager/bin/dlnkmgr
 DLNKMGR_LINUX=/opt/DynamicLinkManager/bin/dlnkmgr
 
+# Connection settings for URL response check
+CONNECTION_TIMEOUT=5
+MAX_TIME=5
+
 # NetIQ Identity Manager: server to drivers association
 # All drivers listed for a server will be checked to be running
 # One driver per line
