@@ -182,7 +182,7 @@ _check_url_response()
 {
     URL=$1
 
-    curl -k --connect-timeout ${CONNECTION_TIMEOUT} --max-time ${MAX_TIME} \
+    curl -k -f --connect-timeout ${CONNECTION_TIMEOUT} --max-time ${MAX_TIME} \
         ${URL} >/dev/null 2>&1
 
     return $?
