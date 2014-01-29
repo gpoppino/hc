@@ -90,6 +90,22 @@ run_checks()
 
         [ $RETVAL -gt 0 ] && \
             GLOBAL_RETVAL=$((${GLOBAL_RETVAL} + ${RETVAL}))
+
+        if [ $RETVAL -gt 0 ] && [ ${HANDLE_SERVICES} -eq 0 ] ;
+        then
+            handle_service=$(echo ${run_test} | sed 's/check/handle/g')
+
+            type ${handle_service} 2>/dev/null | grep -q function && {
+
+                echo "${handle_service}" | awk '{ printf "%-26s:  ", $1 }'
+
+                ${handle_service}
+                RETVAL=$?
+
+                [ $RETVAL -eq 0 ] && echo "[SOLVED]" || echo "[FAILED]"
+            }
+        fi
+
     done
     echo
     echo "= Health check for $(hostname -s) [Done] -- $(date) ="

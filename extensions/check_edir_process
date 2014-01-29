@@ -5,6 +5,12 @@ check_edir_process()
     return $?
 }
 
+handle_edir_process()
+{
+    _restart_service "ndsd"
+    return $?
+}
+
 probe_edir_process()
 {
     which ndsd >/dev/null 2>&1 || return 1

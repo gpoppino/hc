@@ -134,3 +134,36 @@ check_cpu_utilization()
     return $? 
 }
 
+_restart_service()
+{
+    SERVICE_NAME=$1
+
+    RESTART_COMMAND=$(which systemctl 2>/dev/null || \
+        which restart 2>/dev/null || which service 2>/dev/null || \
+        which /etc/init.d/${SERVICE_NAME} 2>/dev/null)
+
+    case "$RESTART_COMMAND" in
+        *systemctl)
+            ${SUDO} $RESTART_COMMAND restart ${SERVICE_NAME}.service >/dev/null 2>&1
+            RETVAL=$?
+            ;;
+        *restart)
+            ${SUDO} $RESTART_COMMAND $SERVICE_NAME >/dev/null 2>&1
+            RETVAL=$?
+            ;;
+        *service)
+            ${SUDO} $RESTART_COMMAND $SERVICE_NAME restart >/dev/null 2>&1
+            RETVAL=$?
+            ;;
+        *init.d/$SERVICE_NAME)
+            ${SUDO} $RESTART_COMMAND restart >/dev/null 2>&1
+            RETVAL=$?
+            ;;
+        *)
+            echo "No restart command found!"
+            return 1
+    esac
+
+    return $RETVAL
+}
+

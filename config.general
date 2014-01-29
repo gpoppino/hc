@@ -43,6 +43,10 @@ DAYS_BEFORE_CERTIFICATE_EXPIRATION=30
 # 1 = not run, 0 = run
 RUN_PROBES=0
 
+# Should handlers be run to restore failed services?
+# 1 = not run, 0 = run
+HANDLE_SERVICES=1
+
 # Multiple Path IO Commands
 DATAPATH=/usr/bin/datapath
 LSPATH=/usr/sbin/lspath

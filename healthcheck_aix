@@ -97,3 +97,10 @@ check_cpu_utilization()
     return $?
 }
 
+_restart_service()
+{
+    SERVICE_NAME=$1
+
+    stopsrc -s $SERVICE_NAME; startsrc -s $SERVICE_NAME
+    return $?
+}
