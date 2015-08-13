@@ -135,19 +135,29 @@ _check_certificate_expiration()
     PORT=$1
     OPENSSL=/usr/bin/openssl
 
-    expiration_date=$(echo | \
+    EXPIRATION_DATE=$(echo | \
         ${OPENSSL} s_client -connect $(hostname -f):${PORT} 2>/dev/null | \
         sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | \
         ${OPENSSL} x509 -noout -subject -dates 2>/dev/null | \
         grep notAfter | cut -d= -f2 | awk '{ print $1,$2,$4 }'
     )
-    [ -z $expiration_date ] && return 1
+    [ -z $EXPIRATION_DATE ] && return 1
 
-    cert_year=$(date --date="$expiration_date \
+    _check_expiration_date $EXPIRATION_DATE
+    RETVAL=$?
+
+    [ $RETVAL -eq 1 ] && echo " + Certificate will expire or expired on: $EXPIRATION_DATE"
+
+    return $RETVAL
+}
+
+_check_expiration_date()
+{
+    cert_year=$(date --date="$EXPIRATION_DATE \
         ${DAYS_BEFORE_CERTIFICATE_EXPIRATION} days ago" +%Y)
-    cert_month=$(date --date="$expiration_date \
+    cert_month=$(date --date="$EXPIRATION_DATE \
         ${DAYS_BEFORE_CERTIFICATE_EXPIRATION} days ago" +%m)
-    cert_day=$(date --date="$expiration_date \
+    cert_day=$(date --date="$EXPIRATION_DATE \
         ${DAYS_BEFORE_CERTIFICATE_EXPIRATION} days ago" +%d)
 
     EXPIRED=0
@@ -156,11 +166,8 @@ _check_certificate_expiration()
     [ $(date +%Y) -eq $cert_year ] && [ $(date +%m) -eq $cert_month ] && \
         [ $(date +%d) -ge $cert_day ] && EXPIRED=1
 
-    [ $EXPIRED -eq 1 ] && echo " + Certificate will expire or expired on: $expiration_date"
-    
     return $EXPIRED 
 }
-
 
 _check_cpu_utilization()
 {
