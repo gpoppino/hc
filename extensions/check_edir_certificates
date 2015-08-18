@@ -6,7 +6,10 @@ check_edir_certificates()
     [ -z ${NDSCONFIG} ] && return 1
 
     SERVER_CONTEXT=$(${SUDO} ${NDSCONFIG} get n4u.nds.server-context | \
-            grep server-context | cut -d= -f2,3,4 | tr '.' ',') \
+            grep server-context= | awk '{
+                                            where = match($1, "=");
+                                            print substr($1, where + 1)
+                                        }' | tr '.' ',')
     SERVER_NAME=$(${SUDO} ${NDSCONFIG} get n4u.nds.server-name | grep server-name | \
         cut -d= -f2)
 
