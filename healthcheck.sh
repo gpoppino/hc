@@ -10,7 +10,8 @@ then
     exit 0
 fi
 
-tar cf - . | ssh ${SERVER} "(mkdir ${TMPDIR} && cd ${TMPDIR} && \
+tar cf - . | ssh -oStrictHostKeyChecking=no -oCheckHostIP=no \
+    -oConnectTimeout=20 ${SERVER} "(mkdir ${TMPDIR} && cd ${TMPDIR} && \
     tar xmf - 2>/dev/null && ksh ./main_healthcheck.sh)"
 RETVAL=$?
 
