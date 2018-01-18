@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Healthcheck is a script written in korn shell, awk and sed with the purpose of
+Healthcheck is a script written in bourne shell, awk and sed with the purpose of
 testing different aspects of an Unix operating system and returning a status
 code of success or failure for each one of these tests. This is useful to
 quickly check for availability of services, file systems capacity thresholds,
@@ -60,13 +60,13 @@ Running the script
 
 In order to run the script locally, run the following command:
 
-`$ ksh main_healthcheck.sh`
+`$ bash main_healthcheck.sh`
 
 > Note that some checks might need SUDO permissions if run as a regular user.
 
 To run the script on another server, run the following command:
 
-`$ ksh healthcheck.sh servername`
+`$ bash healthcheck.sh servername`
 
 > The whole script is transferred to the remote server (called servername in
 > this example) to the */tmp* directory via ssh and then removed after

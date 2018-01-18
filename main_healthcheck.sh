@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 
 GENERAL_CONFIG="config.general"
 EXTENSIONS_DIR="./extensions"

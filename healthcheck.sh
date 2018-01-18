@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 
 SERVER=$1
 TMPDIR=/tmp/$(date +%s)${RANDOM}
@@ -12,7 +12,7 @@ fi
 
 tar cf - . | ssh -oStrictHostKeyChecking=no -oCheckHostIP=no \
     -oConnectTimeout=20 ${SERVER} "(mkdir ${TMPDIR} && cd ${TMPDIR} && \
-    tar xmf - 2>/dev/null && ksh ./main_healthcheck.sh)"
+    tar xmf - 2>/dev/null && bash ./main_healthcheck.sh)"
 RETVAL=$?
 
 ssh ${SERVER} "rm -rf ${TMPDIR}"
