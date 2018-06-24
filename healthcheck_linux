@@ -25,7 +25,7 @@ check_network()
         ${SUDO} grep -iE "ONBOOT=.?no.?|STARTMODE=(.?manual.?|.?off.?)" \
             $CONFIG_PATH/ifcfg-${dev} >/dev/null 2>&1 && continue
 
-        (/sbin/ifconfig ${dev} | grep -w UP) >/dev/null 2>&1
+        _check_network_link_up $dev
         [ $? -ge 1 ] && RETVAL=1 && echo " + ${dev} is down."
     done
 
@@ -42,7 +42,7 @@ check_network()
 
     for dev in ${netdevices};
     do
-        (/sbin/ifconfig ${dev} | grep -w UP) >/dev/null 2>&1
+        _check_network_link_up $dev
         [ $? -ge 1 ] && RETVAL=1 && echo " + ${dev} is down."
     done
     

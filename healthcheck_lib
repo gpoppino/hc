@@ -196,3 +196,15 @@ _check_url_response()
     return $?
 }
 
+_check_network_link_up()
+{
+    DEV=$1
+
+    IFCONFIG=$(${SUDO} which ifconfig 2>/dev/null)
+    IP=$(${SUDO} which ip 2>/dev/null)
+
+    [ ! -z "${IFCONFIG}" ] && ${IFCONFIG} ${DEV} | grep -w UP >/dev/null 2>&1 && return 0
+    [ ! -z "${IP}" ] && ${IP} link show ${DEV} | grep -w UP >/dev/null 2>&1 && return 0
+    return 1
+}
+
