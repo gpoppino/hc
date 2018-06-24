@@ -37,7 +37,8 @@ _check_process()
 _check_tcp_port()
 {
     PORT=$1
-    netstat -lnt | awk '{ print $4 }' | awk 'BEGIN { FS=":" } { print $NF }' | \
+    NETSTAT=$(which netstat 2>/dev/null || which ss 2>/dev/null)
+    ${NETSTAT} -lnt | awk '{ print $4 }' | awk 'BEGIN { FS=":" } { print $NF }' | \
         grep -w ${PORT} >/dev/null 2>&1 || return 1
 
     NETCAT=$(which netcat 2>/dev/null || which nc 2>/dev/null)
