@@ -101,14 +101,21 @@ check_paging_space()
 {
     SWAPON=/sbin/swapon
     FSTAB=/etc/fstab
+    SYSTEMCTL=/usr/bin/systemctl
 
-    available_ps=$(cat ${FSTAB} | \
-        awk '$3 ~ /swap/ && $1 !~ /^#/ && $4 !~ /noauto/' | wc -l)
+    if [ -e ${SYSTEMCTL} ];
+    then
+        available_ps=$(${SYSTEMCTL} -t swap --state=loaded | grep swap | wc -l)
+    else
+        available_ps=$(cat ${FSTAB} | \
+            awk '$3 ~ /swap/ && $1 !~ /^#/ && $4 !~ /noauto/' | wc -l)
+    fi
+
     active_ps=$(${SWAPON} -s | awk 'NR > 1' | wc -l)
 
     if [[ ${available_ps} -eq 0 ]] ;
     then
-        echo " + No paging device(s) in ${FSTAB}"
+        echo " + No paging device(s) available"
         return 1
     fi
 
